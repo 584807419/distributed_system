@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"distributed_system/log"
+	"distributed_system/grades"
 	"distributed_system/registry"
 	"distributed_system/service"
 	"fmt"
@@ -10,17 +10,16 @@ import (
 )
 
 func main() {
-	log.Run("./distributed_system.log")
-	host, port := "localhost", "4000"
+	host, port := "localhost", "6000"
 	serviceAddress := fmt.Sprintf("http://%s:%s", host, port)
 	r := registry.Registration{
-		ServiceName: registry.LogService,
+		ServiceName: registry.GradingService,
 		ServiceURL:  serviceAddress,
 	}
-	ctx, err := service.Start(context.Background(), host, port, r, log.RegisterHandlers)
+	ctx, err := service.Start(context.Background(), host, port, r, grades.RegisterHandlers)
 	if err != nil {
 		stlog.Fatalln(err)
 	}
 	<-ctx.Done()
-	fmt.Println("shutting down log service.")
+	fmt.Println("shutting down grading service.")
 }

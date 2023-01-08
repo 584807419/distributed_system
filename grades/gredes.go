@@ -1,6 +1,9 @@
 package grades
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+)
 
 type GradeType string
 
@@ -17,7 +20,7 @@ type Student struct {
 	Grades    []Grade
 }
 
-// 学生平均成绩计算
+// 学生平均成绩计算方法
 func (s Student) Average() float32 {
 	var result float32
 	for _, grade := range s.Grades {
@@ -34,7 +37,10 @@ const (
 
 type Students []Student
 
-var students Students
+var (
+	students      Students
+	studentsMutex sync.Mutex // 加锁保证并发访问安全
+)
 
 // 通过学生的id找到学生
 func (ss Students) GetByID(id int) (*Student, error) {

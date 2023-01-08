@@ -1,5 +1,6 @@
 package grades
 
+//  init函数在包被使用的时候首先运行
 func init() {
 	students = []Student{
 		{
