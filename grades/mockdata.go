@@ -1,6 +1,5 @@
 package grades
 
-//  init函数在包被使用的时候首先运行
 func init() {
 	students = []Student{
 		{
@@ -8,76 +7,109 @@ func init() {
 			FirstName: "Nick",
 			LastName:  "Carter",
 			Grades: []Grade{
-				{Title: "Quiz 1",
+				{
+					Title: "Quiz 1",
 					Type:  GradeQuiz,
-					Score: 85},
-				{Title: "final exam",
+					Score: 85,
+				},
+				{
+					Title: "Final Exam",
 					Type:  GradeExam,
-					Score: 94},
-				{Title: "quiz 2",
+					Score: 94,
+				},
+				{
+					Title: "Quiz 2",
 					Type:  GradeQuiz,
-					Score: 82},
+					Score: 82,
+				},
 			},
 		},
 		{
 			ID:        2,
-			FirstName: "roberto",
+			FirstName: "Roberto",
 			LastName:  "Baggio",
 			Grades: []Grade{
-				{Title: "Quiz 1",
+				{
+					Title: "Quiz 1",
 					Type:  GradeQuiz,
-					Score: 100},
-				{Title: "final exam",
+					Score: 100,
+				},
+				{
+					Title: "Final Exam",
 					Type:  GradeExam,
-					Score: 100},
-				{Title: "quiz 2",
+					Score: 100,
+				},
+				{
+					Title: "Quiz 2",
 					Type:  GradeQuiz,
-					Score: 81},
+					Score: 81,
+				},
 			},
-		}, {
+		},
+		{
 			ID:        3,
-			FirstName: "emma",
-			LastName:  "stone",
+			FirstName: "Emma",
+			LastName:  "Stone",
 			Grades: []Grade{
-				{Title: "Quiz 1",
+				{
+					Title: "Quiz 1",
 					Type:  GradeQuiz,
-					Score: 67},
-				{Title: "final exam",
+					Score: 67,
+				},
+				{
+					Title: "Final Exam",
 					Type:  GradeExam,
-					Score: 0},
-				{Title: "quiz 2",
+					Score: 0,
+				},
+				{
+					Title: "Quiz 2",
 					Type:  GradeQuiz,
-					Score: 75},
+					Score: 75,
+				},
 			},
-		}, {
+		},
+		{
 			ID:        4,
-			FirstName: "rachel",
-			LastName:  "mcadams",
+			FirstName: "Rachel",
+			LastName:  "McAdams",
 			Grades: []Grade{
-				{Title: "Quiz 1",
+				{
+					Title: "Quiz 1",
 					Type:  GradeQuiz,
-					Score: 98},
-				{Title: "final exam",
+					Score: 98,
+				},
+				{
+					Title: "Final Exam",
 					Type:  GradeExam,
-					Score: 99},
-				{Title: "quiz 2",
+					Score: 99,
+				},
+				{
+					Title: "Quiz 2",
 					Type:  GradeQuiz,
-					Score: 94},
+					Score: 94,
+				},
 			},
-		}, {
+		},
+		{
 			ID:        5,
-			FirstName: "kelly",
-			LastName:  "clarkson",
+			FirstName: "Kelly",
+			LastName:  "Clarkson",
 			Grades: []Grade{
-				{Title: "Quiz 1",
+				{
+					Title: "Quiz 1",
 					Type:  GradeQuiz,
-					Score: 95},
-				{Title: "final exam",
+					Score: 95,
+				},
+				{
+					Title: "Final Exam",
 					Type:  GradeExam,
-					Score: 100},
-				{Title: "quiz 2",
+					Score: 100,
+				},
+				{
+					Title: "Quiz 2",
 					Type:  GradeQuiz,
-					Score: 97},
+					Score: 97,
+				},
 			},
 		},
 	}

@@ -11,14 +11,20 @@ import (
 	"sync"
 )
 
-// 给客户端服务准备的函数
 func RegisterService(r Registration) error {
+	heartbeatURL, err := url.Parse(r.HeartbeatURL)
+	if err != nil {
+		return err
+	}
+	http.HandleFunc(heartbeatURL.Path, func (w http.ResponseWriter, r *http.Request)  {
+		w.WriteHeader(http.StatusOK)
+	})
 
 	serviceUpdateURL, err := url.Parse(r.ServiceUpdateURL)
 	if err != nil {
 		return err
 	}
-	http.Handle(serviceUpdateURL.Path, &serviceUpdateHandler{})
+	http.Handle(serviceUpdateURL.Path, &serviceUpdateHanlder{})
 
 	buf := new(bytes.Buffer)
 	enc := json.NewEncoder(buf)
@@ -33,14 +39,16 @@ func RegisterService(r Registration) error {
 	}
 
 	if res.StatusCode != http.StatusOK {
-		return fmt.Errorf("注册服务失败%v", res.StatusCode)
+		return fmt.Errorf("Failed to register service. Registry service "+
+			"responded with code %v", res.StatusCode)
 	}
+
 	return nil
 }
 
-type serviceUpdateHandler struct{}
+type serviceUpdateHanlder struct{}
 
-func (suh serviceUpdateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (suh serviceUpdateHanlder) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
@@ -53,11 +61,13 @@ func (suh serviceUpdateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	fmt.Printf("Updated received %v\n", p)
 	prov.Update(p)
 }
 
 func ShutdownService(url string) error {
-	req, err := http.NewRequest(http.MethodDelete, ServicesURL, bytes.NewBuffer([]byte(url)))
+	req, err := http.NewRequest(http.MethodDelete, ServicesURL,
+		bytes.NewBuffer([]byte(url)))
 	if err != nil {
 		return err
 	}
@@ -67,7 +77,8 @@ func ShutdownService(url string) error {
 		return err
 	}
 	if res.StatusCode != http.StatusOK {
-		return fmt.Errorf("卸载服务失败，响应：%v", res.StatusCode)
+		return fmt.Errorf("Failed to deregister service. Registry "+
+			"service responded with code %v", res.StatusCode)
 	}
 	return nil
 }
@@ -77,26 +88,24 @@ type providers struct {
 	mutex    *sync.RWMutex
 }
 
-var prov = providers{
-	services: make(map[ServiceName][]string),
-	mutex:    new(sync.RWMutex),
-}
-
 func (p *providers) Update(pat patch) {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
+
 	for _, patchEntry := range pat.Added {
 		if _, ok := p.services[patchEntry.Name]; !ok {
 			p.services[patchEntry.Name] = make([]string, 0)
 		}
-		p.services[patchEntry.Name] = append(p.services[patchEntry.Name], patchEntry.URL)
+		p.services[patchEntry.Name] = append(p.services[patchEntry.Name],
+			patchEntry.URL)
 	}
 
 	for _, patchEntry := range pat.Removed {
 		if providerURLs, ok := p.services[patchEntry.Name]; ok {
 			for i := range providerURLs {
 				if providerURLs[i] == patchEntry.URL {
-					p.services[patchEntry.Name] = append(providerURLs[:i], providerURLs[i+1:]...)
+					p.services[patchEntry.Name] = append(providerURLs[:i],
+						providerURLs[i+1:]...)
 				}
 			}
 		}
@@ -114,4 +123,9 @@ func (p providers) get(name ServiceName) (string, error) {
 
 func GetProvider(name ServiceName) (string, error) {
 	return prov.get(name)
+}
+
+var prov = providers{
+	services: make(map[ServiceName][]string),
+	mutex:    new(sync.RWMutex),
 }

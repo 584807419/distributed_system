@@ -2,14 +2,15 @@ package log
 
 import (
 	"bytes"
-	"distributed_system/registry"
+	"distributed/registry"
 	"fmt"
-	stlog "log"
 	"net/http"
+
+	stlog "log"
 )
 
 func SetClientLogger(serviceURL string, clientService registry.ServiceName) {
-	stlog.SetPrefix(fmt.Sprintf("[%v]-", clientService))
+	stlog.SetPrefix(fmt.Sprintf("[%v] - ", clientService))
 	stlog.SetFlags(0)
 	stlog.SetOutput(&clientLogger{url: serviceURL})
 }
@@ -25,7 +26,7 @@ func (cl clientLogger) Write(data []byte) (int, error) {
 		return 0, err
 	}
 	if res.StatusCode != http.StatusOK {
-		return 0, fmt.Errorf("failed to send log message.Service response")
+		return 0, fmt.Errorf("Failed to send log message. Service responded with %d - %s", res.StatusCode, res.Status)
 	}
 	return len(data), nil
 }
